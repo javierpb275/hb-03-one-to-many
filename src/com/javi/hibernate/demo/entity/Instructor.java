@@ -1,5 +1,8 @@
 package com.javi.hibernate.demo.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -37,6 +41,13 @@ public class Instructor {
 		@OneToOne(cascade=CascadeType.ALL)
 		@JoinColumn(name="instructor_detail_id")
 		private InstructorDetail instructorDetail;
+		
+		//**set up relationship/mapping between Instructor and List<Course>
+		
+		@OneToMany(mappedBy="instructor",//Refers to "instructor" property in "Course" class
+					cascade= {CascadeType.PERSIST, CascadeType.MERGE, //do NOT apply cascading DELETES (REMOVE)
+							  CascadeType.DETACH, CascadeType.REFRESH})
+		private List<Course> courses;
 		
 		
 		// create constructors
@@ -104,6 +115,17 @@ public class Instructor {
 			this.instructorDetail = instructorDetail;
 		}
 
+		//----------------------------
+		
+		public List<Course> getCourses() {
+			return courses;
+		}
+
+
+		public void setCourses(List<Course> courses) {
+			this.courses = courses;
+		}
+
 		
 		// generate toString() method
 		
@@ -114,6 +136,19 @@ public class Instructor {
 					+ ", instructorDetail=" + instructorDetail + "]";
 		}
 		
+		// add convenience methods for bi-directional relationship
+		
+		public void add(Course tempCourse) {
+			
+			if (courses == null) {
+				courses = new ArrayList<>();
+			}
+			
+			courses.add(tempCourse);
+			
+			tempCourse.setInstructor(this);
+			
+		}
 		
 
 }

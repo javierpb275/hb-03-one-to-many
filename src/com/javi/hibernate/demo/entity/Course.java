@@ -24,7 +24,8 @@ public class Course {
 	@Column(name="title")
 	private String title;
 	
-	@ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+	//**set up relationship/mapping between Course and Instructor
+	@ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})//do NOT apply cascading DELETES
 	@JoinColumn(name="instructor_id")
 	private Instructor instructor;
 	
